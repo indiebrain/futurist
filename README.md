@@ -1,8 +1,9 @@
 # Futurist
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/futurist`. To experiment with that code, run `bin/console` for an interactive prompt.
+An implementation of the [future](https://en.wikipedia.org/wiki/Futures_and_promises) construct, inspired by [Celluloid](https://github.com/celluloid/celluloid/wiki/Futures)'s block based futures, which uses process forking as a means of backgrounding work.
 
-TODO: Delete this and the text above, and describe your gem
+**Note**
+This implementation will only work on OSes which support process forking.
 
 ## Installation
 
@@ -22,7 +23,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Futures also allow you to background the computation of any block.
+
+### Create a future
+
+The call to `Futurist::Future#value` will block until the result of executing the block is available. If an exception occured during the block's execution, the call to future.value will reraise the same exception.
+
+```ruby
+future = Futurist::Future.new { 3 + 2 }
+future.value # blocks until value is available
+=> 5
+```
 
 ## Development
 
@@ -32,5 +43,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/futurist.
+Bug reports and pull requests are welcome on GitHub at https://github.com/indiebrain/futurist.
 
