@@ -1,5 +1,5 @@
 require "futurist/version"
+require "futurist/future"
 
 module Futurist
-  # Your code goes here...
 end
