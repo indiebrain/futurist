@@ -8,6 +8,7 @@ module Futurist
       @value = :no_value
       @pipe = IO.pipe
       @worker_pid = fork_worker_process
+      @value_ready_monitor = ProcessReadyMonitor.new(worker_pid)
     end
 
     def value
@@ -15,6 +16,10 @@ module Futurist
         @value = read_worker_results
       end
       @value
+    end
+
+    def ready?
+      @value_ready_monitor.ready?
     end
 
     private
@@ -43,7 +48,6 @@ module Futurist
       reader, writer = pipe
 
       writer.close
-      Process.wait(worker_pid)
       raw_result = reader.read
       result = Marshal.load(raw_result)
       if result.kind_of?(Exception)
