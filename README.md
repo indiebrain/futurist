@@ -1,5 +1,7 @@
 # Futurist
 
+[![Build Status](https://travis-ci.org/indiebrain/futurist.svg?branch=master)](https://travis-ci.org/indiebrain/futurist)
+
 An implementation of the [future](https://en.wikipedia.org/wiki/Futures_and_promises) construct, inspired by [Celluloid](https://github.com/celluloid/celluloid/wiki/Futures)'s block based futures, which uses process forking as a means of backgrounding work.
 
 **Note**
