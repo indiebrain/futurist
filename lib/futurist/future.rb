@@ -19,7 +19,7 @@ module Futurist
     end
 
     def ready?
-      @worker_process_completion_monitor.ready?
+      @worker_process_completion_monitor.complete?
     end
 
     private
