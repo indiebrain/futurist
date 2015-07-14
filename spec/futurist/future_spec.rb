@@ -28,11 +28,11 @@ describe Futurist::Future do
 
   it "is ready when the value calculation is complete" do
     monitor = double(:monitor_instance,
-                     ready?: true)
+                     complete?: true)
     monitor_class= double(:monitor_class,
                            new: monitor)
     stub_const(
-      "Futurist::ProcessReadyMonitor",
+      "Futurist::ProcessCompletionMonitor",
       monitor_class
     )
     work = double(:work)
@@ -45,11 +45,11 @@ describe Futurist::Future do
 
   it "is not ready when the value calculation is incomplete" do
     monitor = double(:monitor_instance,
-                     ready?: false)
+                     complete?: false)
     monitor_class= double(:monitor_class,
                            new: monitor)
     stub_const(
-      "Futurist::ProcessReadyMonitor",
+      "Futurist::ProcessCompletionMonitor",
       monitor_class
     )
     work = double(:work)
