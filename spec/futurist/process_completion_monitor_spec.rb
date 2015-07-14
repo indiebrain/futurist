@@ -1,12 +1,12 @@
 require "spec_helper"
 
-describe Futurist::ProcessReadyMonitor do
+describe Futurist::ProcessCompletionMonitor do
 
   it "is ready when its process has terminated" do
     work = double(:work)
     process_id = fork { work }
 
-    monitor = Futurist::ProcessReadyMonitor.new(process_id)
+    monitor = Futurist::ProcessCompletionMonitor.new(process_id)
     sleep_and_wait_until { monitor.ready? }
 
     expect(monitor)
@@ -20,7 +20,7 @@ describe Futurist::ProcessReadyMonitor do
       long_running_work
     end
 
-    monitor = Futurist::ProcessReadyMonitor.new(process_id)
+    monitor = Futurist::ProcessCompletionMonitor.new(process_id)
 
     expect(monitor)
       .to_not be_ready

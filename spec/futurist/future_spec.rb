@@ -32,7 +32,7 @@ describe Futurist::Future do
     monitor_class= double(:monitor_class,
                            new: monitor)
     stub_const(
-      "Futurist::ProcessReadyMonitor",
+      "Futurist::ProcessCompletionMonitor",
       monitor_class
     )
     work = double(:work)
@@ -49,7 +49,7 @@ describe Futurist::Future do
     monitor_class= double(:monitor_class,
                            new: monitor)
     stub_const(
-      "Futurist::ProcessReadyMonitor",
+      "Futurist::ProcessCompletionMonitor",
       monitor_class
     )
     work = double(:work)

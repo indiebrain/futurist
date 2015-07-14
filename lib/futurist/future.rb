@@ -8,7 +8,7 @@ module Futurist
       @value = :no_value
       @pipe = IO.pipe
       @worker_pid = fork_worker_process
-      @value_ready_monitor = ProcessReadyMonitor.new(worker_pid)
+      @worker_process_completion_monitor = ProcessCompletionMonitor.new(worker_pid)
     end
 
     def value
@@ -19,7 +19,7 @@ module Futurist
     end
 
     def ready?
-      @value_ready_monitor.ready?
+      @worker_process_completion_monitor.ready?
     end
 
     private
@@ -27,7 +27,8 @@ module Futurist
     attr_reader :arguments,
                 :block,
                 :pipe,
-                :worker_pid
+                :worker_pid,
+                :worker_process_completion_monitor
 
     def fork_worker_process
       reader, writer = pipe

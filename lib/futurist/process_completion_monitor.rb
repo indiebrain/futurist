@@ -1,5 +1,5 @@
 module Futurist
-  class ProcessReadyMonitor
+  class ProcessCompletionMonitor
 
     def initialize(process_id)
       @process_id = process_id
@@ -15,7 +15,6 @@ module Futurist
     attr_reader :process_id
 
     def spawn_monitoring_thread
-
       Thread.new do
         Process.wait(process_id)
         @ready = true
