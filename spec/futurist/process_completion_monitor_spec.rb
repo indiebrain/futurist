@@ -16,7 +16,7 @@ describe Futurist::ProcessCompletionMonitor do
   it "is not complete when its process is still executing" do
     long_running_work = double(:work)
     process_id = fork do
-      sleep
+      sleep 5
       long_running_work
     end
 
