@@ -1,14 +1,14 @@
 module Futurist
-  class ProcessCompletionMonitor
+  class ProcessMonitor
 
     def initialize(process_id)
       @process_id = process_id
-      @complete = false
+      @exited = false
       spawn_monitoring_thread
     end
 
-    def complete?
-      @complete
+    def exited?
+      @exited
     end
 
     private
@@ -17,7 +17,7 @@ module Futurist
     def spawn_monitoring_thread
       Thread.new do
         Process.wait(process_id)
-        @complete = true
+        @exited = true
       end
     end
   end

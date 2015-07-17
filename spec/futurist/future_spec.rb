@@ -26,13 +26,13 @@ describe Futurist::Future do
     }.to raise_exception(FakeError)
   end
 
-  it "is ready when the value calculation is complete" do
+  it "is ready when the value calculation is exited" do
     monitor = double(:monitor_instance,
-                     complete?: true)
+                     exited?: true)
     monitor_class= double(:monitor_class,
                            new: monitor)
     stub_const(
-      "Futurist::ProcessCompletionMonitor",
+      "Futurist::ProcessMonitor",
       monitor_class
     )
     work = double(:work)
@@ -43,13 +43,13 @@ describe Futurist::Future do
       .to be_ready
   end
 
-  it "is not ready when the value calculation is incomplete" do
+  it "is not ready when the value calculation is inexited" do
     monitor = double(:monitor_instance,
-                     complete?: false)
+                     exited?: false)
     monitor_class= double(:monitor_class,
                            new: monitor)
     stub_const(
-      "Futurist::ProcessCompletionMonitor",
+      "Futurist::ProcessMonitor",
       monitor_class
     )
     work = double(:work)
