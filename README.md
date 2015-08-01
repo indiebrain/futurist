@@ -13,16 +13,13 @@ This implementation will only work on OSes which support process forking.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'futurist'
+gem 'futurist', github: 'indiebrain/futurist'
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install futurist
 
 ## Usage
 
@@ -47,4 +44,3 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/indiebrain/futurist.
-
