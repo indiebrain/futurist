@@ -2,44 +2,44 @@ module Futurist
   class Future
 
     def initialize(forking_method: Process.method(:fork),
-                   process_monitoring_method: Process.method(:detach),
+                   promise_monitor_factory_method: Process.method(:detach),
                    channel: Futurist::Pipe.new,
-                   &block)
-      @block = block
+                   &promise_callable)
+      @promise_callable = promise_callable
       @channel = channel
       @forking_method = forking_method
       @value = :not_retrieved
-      @worker_process_id = start_worker
-      @process_monitor = process_monitoring_method.call(@worker_process_id)
+      @promise_process_id = start_promise_evaluation
+      @promise_monitor = promise_monitor_factory_method.call(@promise_process_id)
     end
 
     def value
       if @value == :not_retrieved
-        @value = read_worker_value
+        @value = read_promise_value
       end
       @value
     end
 
     def ready?
-      !process_monitor.alive?
+      !promise_monitor.alive?
     end
 
     private
-    attr_reader :block,
+    attr_reader :promise_callable,
                 :channel,
                 :forking_method,
-                :process_monitor
+                :promise_monitor
 
-    def start_worker
+    def start_promise_evaluation
       forking_method.call do
-        value = SafeCallable.new(block).call
+        value = SafeCallable.new(promise_callable).call
         channel.write(value)
         channel.close_writer
         exit!(0)
       end
     end
 
-    def read_worker_value
+    def read_promise_value
       channel.close_writer
       value = channel.read
       channel.close_reader
