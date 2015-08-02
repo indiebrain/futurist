@@ -32,12 +32,7 @@ module Futurist
 
     def start_worker
       forking_method.call do
-        channel.close_reader
-        begin
-          value = block.call
-        rescue => e
-          value = e
-        end
+        value = SafeCallable.new(block).call
         channel.write(value)
         channel.close_writer
         exit!(0)
