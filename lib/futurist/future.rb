@@ -4,8 +4,8 @@ module Futurist
     def initialize(forking_method: Process.method(:fork),
                    promise_monitor_factory_method: Process.method(:detach),
                    channel: Futurist::Pipe.new,
-                   &promise_callable)
-      @promise_callable = promise_callable
+                   &block)
+      @promise = Futurist::Promise.new(callable: block)
       @channel = channel
       @forking_method = forking_method
       @value = :not_retrieved
@@ -25,15 +25,14 @@ module Futurist
     end
 
     private
-    attr_reader :promise_callable,
+    attr_reader :promise,
                 :channel,
                 :forking_method,
                 :promise_monitor
 
     def start_promise_evaluation
       forking_method.call do
-        value = SafeCallable.new(promise_callable).call
-        channel.write(value)
+        channel.write(promise.value)
         channel.close_writer
         exit!(0)
       end
