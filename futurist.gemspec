@@ -9,6 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Aaron Kuehler"]
   spec.email         = ["aaron.kuehler@gmail.com"]
 
+  spec.license       = "MIT"
   spec.summary       = %q{A Process based Future}
   spec.description   = %q{An implementation of the Future construct (https://en.wikipedia.org/wiki/Futures_and_promises) which uses system Processes for background value evaluation}
   spec.homepage      = "http://www.github.com/indiebrain/futurist.git"
