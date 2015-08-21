@@ -1,6 +1,5 @@
 module Futurist
   class Promise
-
     def initialize(callable:)
       @callable = SafeCallable.new(callable)
     end
@@ -10,6 +9,7 @@ module Futurist
     end
 
     private
+
     attr_reader :callable
   end
 end

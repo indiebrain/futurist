@@ -3,7 +3,9 @@ module Futurist
     def initialize(promise_execution_strategy: ForkingPromiseExecutionStrategy,
                    &block)
       promise = Futurist::Promise.new(callable: block)
-      @promise_execution_strategy = promise_execution_strategy.new(promise: promise)
+      @promise_execution_strategy = promise_execution_strategy.new(
+        promise: promise
+      )
     end
 
     def value
@@ -15,6 +17,7 @@ module Futurist
     end
 
     private
+
     attr_reader :promise_execution_strategy
   end
 end

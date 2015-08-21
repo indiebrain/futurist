@@ -1,14 +1,15 @@
 require "spec_helper"
 
 describe Futurist::ForkingPromiseExecutionStrategy do
-
   it "forks a process to evaluate its promise" do
     forking_method = Process.method(:fork)
     allow(forking_method).
       to receive(:call).
-          and_call_original
-    strategy = Futurist::ForkingPromiseExecutionStrategy.new(forking_method: forking_method,
-                                                          promise: stub_promise)
+      and_call_original
+    strategy = Futurist::ForkingPromiseExecutionStrategy.new(
+      forking_method: forking_method,
+      promise: stub_promise
+    )
 
     strategy.value
 
@@ -17,7 +18,9 @@ describe Futurist::ForkingPromiseExecutionStrategy do
   end
 
   it "cleans up its forked process" do
-    strategy = Futurist::ForkingPromiseExecutionStrategy.new(promise: stub_promise)
+    strategy = Futurist::ForkingPromiseExecutionStrategy.new(
+      promise: stub_promise
+    )
 
     strategy.value
     sleep 0.1
@@ -28,12 +31,14 @@ describe Futurist::ForkingPromiseExecutionStrategy do
   end
 
   it "is ready after the process has exited" do
-    def ready_monitor_initializer(process_id)
+    def ready_monitor_initializer(_process_id)
       stub_monitor(ready: true)
     end
-    ready_monitor_constructor_method = method(:ready_monitor_initializer)
-    strategy = Futurist::ForkingPromiseExecutionStrategy.new(process_monitor_constructor: ready_monitor_constructor_method,
-                                                          promise: stub_promise)
+    ready_monitor_constructor = method(:ready_monitor_initializer)
+    strategy = Futurist::ForkingPromiseExecutionStrategy.new(
+      process_monitor_constructor: ready_monitor_constructor,
+      promise: stub_promise
+    )
     allow(strategy).
       to receive(:start_promise_evaluation)
 
@@ -44,12 +49,14 @@ describe Futurist::ForkingPromiseExecutionStrategy do
   end
 
   it "is not ready when the process has not yet exited" do
-    def not_ready_monitor_initializer(process_id)
+    def not_ready_monitor_initializer(_process_id)
       stub_monitor(ready: false)
     end
-    not_ready_monitor_constructor_method = method(:not_ready_monitor_initializer)
-    strategy = Futurist::ForkingPromiseExecutionStrategy.new(process_monitor_constructor: not_ready_monitor_constructor_method,
-                                                             promise: stub_promise)
+    not_ready_monitor_constructor = method(:not_ready_monitor_initializer)
+    strategy = Futurist::ForkingPromiseExecutionStrategy.new(
+      process_monitor_constructor: not_ready_monitor_constructor,
+      promise: stub_promise
+    )
     allow(strategy).
       to receive(:start_promise_evaluation)
 
@@ -63,7 +70,7 @@ describe Futurist::ForkingPromiseExecutionStrategy do
     double(:monitor_thread).tap do |monitor|
       allow(monitor).
         to receive(:alive?).
-            and_return(!ready)
+        and_return(!ready)
     end
   end
 
@@ -71,7 +78,7 @@ describe Futurist::ForkingPromiseExecutionStrategy do
     double(:promise).tap do |promise|
       allow(promise).
         to receive(:value).
-            and_return("value")
+        and_return("value")
     end
   end
 end

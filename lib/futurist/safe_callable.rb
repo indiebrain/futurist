@@ -5,14 +5,13 @@ module Futurist
     end
 
     def call
-      begin
-        callable.call
-      rescue => error
-        error
-      end
+      callable.call
+    rescue => error
+      error
     end
 
     private
+
     attr_reader :callable
   end
 end
