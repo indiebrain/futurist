@@ -1,6 +1,5 @@
 module Futurist
   class Pipe
-
     def initialize(pipe: IO.pipe)
       @reader, @writer = pipe
     end
@@ -22,6 +21,7 @@ module Futurist
     end
 
     private
+
     attr_reader :reader,
                 :writer
   end

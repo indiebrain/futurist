@@ -1,7 +1,6 @@
 require "spec_helper"
 
 describe Futurist::Pipe do
-
   it "can be written to and read from" do
     pipe = Futurist::Pipe.new
     value = "value"
@@ -29,7 +28,7 @@ describe Futurist::Pipe do
     reader = stub_reader
     allow(reader).
       to receive(:read).
-          and_return(Marshal.dump("value"))
+      and_return(Marshal.dump("value"))
     io_pair = stub_io_pair(reader: reader)
     pipe = Futurist::Pipe.new(pipe: io_pair)
 
@@ -62,7 +61,7 @@ describe Futurist::Pipe do
   end
 
   def stub_io_pair(reader: stub_reader,
-                writer: stub_writer)
+                   writer: stub_writer)
     [reader, writer]
   end
 

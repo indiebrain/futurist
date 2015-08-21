@@ -1,6 +1,5 @@
 module Futurist
   class ForkingPromiseExecutionStrategy
-
     def initialize(forking_method: Process.method(:fork),
                    process_monitor_constructor: Process.method(:detach),
                    channel: Futurist::Pipe.new,
@@ -25,6 +24,7 @@ module Futurist
     end
 
     private
+
     attr_reader :promise,
                 :channel,
                 :forking_method,
@@ -42,7 +42,7 @@ module Futurist
       channel.close_writer
       value = channel.read
       channel.close_reader
-      if value.kind_of?(Exception)
+      if value.is_a?(Exception)
         raise value
       end
       value

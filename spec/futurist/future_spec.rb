@@ -1,7 +1,6 @@
 require "spec_helper"
 
 describe Futurist::Future do
-
   it "receives the value of its promise at some future point in time" do
     value = "value"
     future = Futurist::Future.new { value }
@@ -14,9 +13,8 @@ describe Futurist::Future do
     class FakeError < StandardError; end
     future = Futurist::Future.new { fail(FakeError, "fail") }
 
-    expect {
-      future.value
-    }.to raise_error(FakeError, "fail")
+    expect { future.value }.
+      to raise_error(FakeError, "fail")
   end
 
   it "is ready after the promise's value has finished calculating" do
@@ -27,7 +25,9 @@ describe Futurist::Future do
     end
 
     value = "value"
-    future = Futurist::Future.new(promise_execution_strategy: ReadyPromiseExecutionStrategy) { value }
+    future = Futurist::Future.new(
+      promise_execution_strategy: ReadyPromiseExecutionStrategy
+    ) { value }
 
     future.value
 
@@ -43,7 +43,9 @@ describe Futurist::Future do
     end
 
     value = "value"
-    future = Futurist::Future.new(promise_execution_strategy: NotReadyPromiseExecutionStrategy) { value }
+    future = Futurist::Future.new(
+      promise_execution_strategy: NotReadyPromiseExecutionStrategy
+    ) { value }
     allow(future).
       to receive(:start_promise_evaluation)
 
