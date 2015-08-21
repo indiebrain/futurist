@@ -1,7 +1,7 @@
 module Futurist
   class Promise
     def initialize(callable:)
-      @callable = SafeCallable.new(callable)
+      @callable = callable
     end
 
     def value

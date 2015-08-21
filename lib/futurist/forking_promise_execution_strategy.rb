@@ -32,7 +32,8 @@ module Futurist
 
     def start_promise_evaluation
       forking_method.call do
-        channel.write(promise.value)
+        safe_promise = SafePromise.new(promise)
+        channel.write(safe_promise.value)
         channel.close_writer
         exit!(0)
       end

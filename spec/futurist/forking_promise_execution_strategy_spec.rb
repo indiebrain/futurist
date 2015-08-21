@@ -17,6 +17,16 @@ describe Futurist::ForkingPromiseExecutionStrategy do
       to have_received(:call)
   end
 
+  it "reraises errors which occur in the forked process" do
+    error = StandardError.new("expected")
+    callable = Proc.new { fail error }
+    promise = Futurist::Promise.new(callable: callable)
+    strategy = Futurist::ForkingPromiseExecutionStrategy.new(promise: promise)
+
+    expect { strategy.value }.
+      to raise_error(StandardError, "expected")
+  end
+
   it "cleans up its forked process" do
     strategy = Futurist::ForkingPromiseExecutionStrategy.new(
       promise: stub_promise
