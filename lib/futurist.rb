@@ -1,4 +1,4 @@
-require "futurist/forking_promise_execution_strategy"
+require "futurist/forking_execution_strategy"
 require "futurist/future"
 require "futurist/pipe"
 require "futurist/promise"

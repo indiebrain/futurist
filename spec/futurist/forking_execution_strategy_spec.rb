@@ -1,12 +1,12 @@
 require "spec_helper"
 
-describe Futurist::ForkingPromiseExecutionStrategy do
+describe Futurist::ForkingExecutionStrategy do
   it "forks a process to evaluate its promise" do
     forking_method = Process.method(:fork)
     allow(forking_method).
       to receive(:call).
       and_call_original
-    strategy = Futurist::ForkingPromiseExecutionStrategy.new(
+    strategy = Futurist::ForkingExecutionStrategy.new(
       forking_method: forking_method,
       promise: stub_promise
     )
@@ -21,14 +21,14 @@ describe Futurist::ForkingPromiseExecutionStrategy do
     error = StandardError.new("expected")
     callable = Proc.new { fail error }
     promise = Futurist::Promise.new(callable: callable)
-    strategy = Futurist::ForkingPromiseExecutionStrategy.new(promise: promise)
+    strategy = Futurist::ForkingExecutionStrategy.new(promise: promise)
 
     expect { strategy.value }.
       to raise_error(StandardError, "expected")
   end
 
   it "cleans up its forked process" do
-    strategy = Futurist::ForkingPromiseExecutionStrategy.new(
+    strategy = Futurist::ForkingExecutionStrategy.new(
       promise: stub_promise
     )
 
@@ -45,7 +45,7 @@ describe Futurist::ForkingPromiseExecutionStrategy do
       stub_monitor(ready: true)
     end
     ready_monitor_constructor = method(:ready_monitor_initializer)
-    strategy = Futurist::ForkingPromiseExecutionStrategy.new(
+    strategy = Futurist::ForkingExecutionStrategy.new(
       process_monitor_constructor: ready_monitor_constructor,
       promise: stub_promise
     )
@@ -63,7 +63,7 @@ describe Futurist::ForkingPromiseExecutionStrategy do
       stub_monitor(ready: false)
     end
     not_ready_monitor_constructor = method(:not_ready_monitor_initializer)
-    strategy = Futurist::ForkingPromiseExecutionStrategy.new(
+    strategy = Futurist::ForkingExecutionStrategy.new(
       process_monitor_constructor: not_ready_monitor_constructor,
       promise: stub_promise
     )

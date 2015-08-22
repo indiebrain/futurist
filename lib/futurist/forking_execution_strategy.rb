@@ -1,5 +1,5 @@
 module Futurist
-  class ForkingPromiseExecutionStrategy
+  class ForkingExecutionStrategy
     def initialize(forking_method: Process.method(:fork),
                    process_monitor_constructor: Process.method(:detach),
                    channel: Futurist::Pipe.new,

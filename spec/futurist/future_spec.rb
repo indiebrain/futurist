@@ -18,7 +18,7 @@ describe Futurist::Future do
   end
 
   it "is ready after the promise's value has finished calculating" do
-    class ReadyPromiseExecutionStrategy < FakePromiseExecutionStrategy
+    class AlwaysReadyExecutionStrategy < FakeExecutionStrategy
       def ready?
         true
       end
@@ -26,7 +26,7 @@ describe Futurist::Future do
 
     value = "value"
     future = Futurist::Future.new(
-      promise_execution_strategy: ReadyPromiseExecutionStrategy
+      execution_strategy: AlwaysReadyExecutionStrategy
     ) { value }
 
     future.value
@@ -36,7 +36,7 @@ describe Futurist::Future do
   end
 
   it "is not ready before the promise's value has finished calculating" do
-    class NotReadyPromiseExecutionStrategy < FakePromiseExecutionStrategy
+    class NeverReadyExecutionStrategy < FakeExecutionStrategy
       def ready?
         false
       end
@@ -44,7 +44,7 @@ describe Futurist::Future do
 
     value = "value"
     future = Futurist::Future.new(
-      promise_execution_strategy: NotReadyPromiseExecutionStrategy
+      execution_strategy: NeverReadyExecutionStrategy
     ) { value }
     allow(future).
       to receive(:start_promise_evaluation)
@@ -55,7 +55,7 @@ describe Futurist::Future do
       to_not be_ready
   end
 
-  class FakePromiseExecutionStrategy
+  class FakeExecutionStrategy
     def initialize(promise:)
       @promise = promise
     end
