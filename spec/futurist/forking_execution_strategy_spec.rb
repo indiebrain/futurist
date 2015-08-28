@@ -45,12 +45,14 @@ describe Futurist::ForkingExecutionStrategy do
       stub_monitor(ready: true)
     end
     ready_monitor_constructor = method(:ready_monitor_initializer)
+    allow_any_instance_of(Futurist::ForkingExecutionStrategy).
+      to receive(:start_promise_evaluation)
     strategy = Futurist::ForkingExecutionStrategy.new(
       process_monitor_constructor: ready_monitor_constructor,
       promise: stub_promise
     )
     allow(strategy).
-      to receive(:start_promise_evaluation)
+      to receive(:read_promise_value)
 
     strategy.value
 
@@ -63,12 +65,14 @@ describe Futurist::ForkingExecutionStrategy do
       stub_monitor(ready: false)
     end
     not_ready_monitor_constructor = method(:not_ready_monitor_initializer)
+    allow_any_instance_of(Futurist::ForkingExecutionStrategy).
+      to receive(:start_promise_evaluation)
     strategy = Futurist::ForkingExecutionStrategy.new(
       process_monitor_constructor: not_ready_monitor_constructor,
       promise: stub_promise
     )
     allow(strategy).
-      to receive(:start_promise_evaluation)
+      to receive(:read_promise_value)
 
     strategy.value
 
