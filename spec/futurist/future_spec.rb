@@ -18,15 +18,15 @@ describe Futurist::Future do
   end
 
   it "is ready after the promise's value has finished calculating" do
-    class AlwaysReadyExecutionStrategy < FakeExecutionStrategy
-      def ready?
+    class ResolvedResolutionStrategy < FakeResolutionStrategy
+      def resolved?
         true
       end
     end
 
     value = "value"
     future = Futurist::Future.new(
-      execution_strategy: AlwaysReadyExecutionStrategy
+      resolution_strategy: ResolvedResolutionStrategy
     ) { value }
 
     future.value
@@ -36,15 +36,15 @@ describe Futurist::Future do
   end
 
   it "is not ready before the promise's value has finished calculating" do
-    class NeverReadyExecutionStrategy < FakeExecutionStrategy
-      def ready?
+    class NotResolvedResolutionStrategy < FakeResolutionStrategy
+      def resolved?
         false
       end
     end
 
     value = "value"
     future = Futurist::Future.new(
-      execution_strategy: NeverReadyExecutionStrategy
+      resolution_strategy: NotResolvedResolutionStrategy
     ) { value }
     allow(future).
       to receive(:start_promise_evaluation)
@@ -55,12 +55,12 @@ describe Futurist::Future do
       to_not be_ready
   end
 
-  class FakeExecutionStrategy
+  class FakeResolutionStrategy
     def initialize(promise:)
       @promise = promise
     end
 
-    def value
+    def resolve
       @promise.value
     end
   end

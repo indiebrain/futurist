@@ -1,21 +1,21 @@
 module Futurist
   class Future
-    def initialize(execution_strategy: ForkingExecutionStrategy,
+    def initialize(resolution_strategy: ForkingResolutionStrategy,
                    &block)
       promise = Futurist::Promise.new(callable: block)
-      @execution_strategy = execution_strategy.new(promise: promise)
+      @resolution_strategy = resolution_strategy.new(promise: promise)
     end
 
     def value
-      @value ||= execution_strategy.value
+      @value ||= resolution_strategy.resolve
     end
 
     def ready?
-      execution_strategy.ready?
+      resolution_strategy.resolved?
     end
 
     private
 
-    attr_reader :execution_strategy
+    attr_reader :resolution_strategy
   end
 end

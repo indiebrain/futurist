@@ -1,17 +1,17 @@
 require "spec_helper"
 
-describe Futurist::ForkingExecutionStrategy do
+describe Futurist::ForkingResolutionStrategy do
   it "forks a process to evaluate its promise" do
     forking_method = Process.method(:fork)
     allow(forking_method).
       to receive(:call).
       and_call_original
-    strategy = Futurist::ForkingExecutionStrategy.new(
+    strategy = Futurist::ForkingResolutionStrategy.new(
       forking_method: forking_method,
       promise: stub_promise
     )
 
-    strategy.value
+    strategy.resolve
 
     expect(forking_method).
       to have_received(:call)
@@ -21,18 +21,18 @@ describe Futurist::ForkingExecutionStrategy do
     error = StandardError.new("expected")
     callable = Proc.new { fail error }
     promise = Futurist::Promise.new(callable: callable)
-    strategy = Futurist::ForkingExecutionStrategy.new(promise: promise)
+    strategy = Futurist::ForkingResolutionStrategy.new(promise: promise)
 
-    expect { strategy.value }.
+    expect { strategy.resolve }.
       to raise_error(StandardError, "expected")
   end
 
   it "cleans up its forked process" do
-    strategy = Futurist::ForkingExecutionStrategy.new(
+    strategy = Futurist::ForkingResolutionStrategy.new(
       promise: stub_promise
     )
 
-    strategy.value
+    strategy.resolve
     sleep 0.1
     zombied_children = system("ps -aho pid,state -p #{Process.pid} | grep -i z")
 
@@ -45,19 +45,19 @@ describe Futurist::ForkingExecutionStrategy do
       stub_monitor(ready: true)
     end
     ready_monitor_constructor = method(:ready_monitor_initializer)
-    allow_any_instance_of(Futurist::ForkingExecutionStrategy).
+    allow_any_instance_of(Futurist::ForkingResolutionStrategy).
       to receive(:start_promise_evaluation)
-    strategy = Futurist::ForkingExecutionStrategy.new(
+    strategy = Futurist::ForkingResolutionStrategy.new(
       process_monitor_constructor: ready_monitor_constructor,
       promise: stub_promise
     )
     allow(strategy).
       to receive(:read_promise_value)
 
-    strategy.value
+    strategy.resolve
 
     expect(strategy).
-      to be_ready
+      to be_resolved
   end
 
   it "is not ready when the process has not yet exited" do
@@ -65,19 +65,19 @@ describe Futurist::ForkingExecutionStrategy do
       stub_monitor(ready: false)
     end
     not_ready_monitor_constructor = method(:not_ready_monitor_initializer)
-    allow_any_instance_of(Futurist::ForkingExecutionStrategy).
+    allow_any_instance_of(Futurist::ForkingResolutionStrategy).
       to receive(:start_promise_evaluation)
-    strategy = Futurist::ForkingExecutionStrategy.new(
+    strategy = Futurist::ForkingResolutionStrategy.new(
       process_monitor_constructor: not_ready_monitor_constructor,
       promise: stub_promise
     )
     allow(strategy).
       to receive(:read_promise_value)
 
-    strategy.value
+    strategy.resolve
 
     expect(strategy).
-      to_not be_ready
+      to_not be_resolved
   end
 
   def stub_monitor(ready:)

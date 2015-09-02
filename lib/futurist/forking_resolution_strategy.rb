@@ -1,5 +1,5 @@
 module Futurist
-  class ForkingExecutionStrategy
+  class ForkingResolutionStrategy
     def initialize(forking_method: Process.method(:fork),
                    process_monitor_constructor: Process.method(:detach),
                    channel: Futurist::Pipe.new,
@@ -12,14 +12,14 @@ module Futurist
       @promise_monitor = process_monitor_constructor.call(@promise_process_id)
     end
 
-    def value
+    def resolve
       if @value == :not_retrieved
         @value = read_promise_value
       end
       @value
     end
 
-    def ready?
+    def resolved?
       !promise_monitor.alive?
     end
 
