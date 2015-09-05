@@ -96,11 +96,9 @@ describe Futurist::ForkingResolutionStrategy do
     )
 
     strategy.resolve
-    sleep 0.1
-    zombied_children = system("ps -aho pid,state -p #{Process.pid} | grep -i z")
 
-    expect(zombied_children).
-      to eq(false)
+    expect(process_exited_and_cleaned_up?(strategy.promise_process_id)).
+      to eq(true)
   end
 
   it "is ready after the process has exited" do
@@ -156,6 +154,41 @@ describe Futurist::ForkingResolutionStrategy do
       allow(promise).
         to receive(:value).
         and_return("value")
+    end
+  end
+
+  def wait_for_pid_to_exit(pid, timeout = 0.1)
+    start_time = Time.now
+    while Time.now - start_time <= timeout
+      begin
+        Process.kill(0, pid)
+      rescue Errno::ESRCH
+        break
+      end
+    end
+  end
+
+  def process_is_not_running?(pid)
+    wait_for_pid_to_exit(pid)
+    Process.kill(0, pid)
+    false
+  rescue Errno::ESRCH
+    true
+  end
+
+  def process_has_been_cleaned_up?(pid)
+    Process.waitpid(pid, Process::WNOHANG)
+    false
+  rescue Errno::ECHILD
+    true
+  end
+
+  def process_exited_and_cleaned_up?(pid)
+    if process_is_not_running?(pid) &&
+       process_has_been_cleaned_up?(pid)
+      true
+    else
+      false
     end
   end
 end
