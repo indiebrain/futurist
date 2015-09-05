@@ -17,6 +17,69 @@ describe Futurist::ForkingResolutionStrategy do
       to have_received(:call)
   end
 
+  it "closes the reader half of the channel" do
+    forking_method = ->(&block) { block.call }
+    pipe = instance_spy(Futurist::Pipe)
+    Futurist::ForkingResolutionStrategy.new(
+      forking_method: forking_method,
+      promise: stub_promise,
+      process_monitor_constructor: -> (_) {},
+      process_exit: -> (_) {},
+      channel: pipe
+    )
+
+    expect(pipe).to have_received(:close_reader)
+  end
+
+  it "writes the value to the channel" do
+    forking_method = ->(&block) { block.call }
+    pipe = instance_spy(Futurist::Pipe)
+    Futurist::ForkingResolutionStrategy.new(
+      forking_method: forking_method,
+      promise: stub_promise,
+      process_monitor_constructor: -> (_) {},
+      process_exit: -> (_) {},
+      channel: pipe
+    )
+
+    expect(pipe).to have_received(:write)
+  end
+
+  it "closes the writer half of the channel" do
+    forking_method = ->(&block) { block.call }
+    pipe = instance_spy(Futurist::Pipe)
+    Futurist::ForkingResolutionStrategy.new(
+      forking_method: forking_method,
+      promise: stub_promise,
+      process_monitor_constructor: -> (_) {},
+      process_exit: -> (_) {},
+      channel: pipe
+    )
+
+    expect(pipe).to have_received(:close_writer)
+  end
+
+  it "it exists with status 0" do
+    forking_method = ->(&block) { block.call }
+    pipe = instance_double(
+      Futurist::Pipe,
+      close_reader: nil,
+      write: nil,
+      close_writer: nil
+    )
+    process_exit = spy(Process.method(:exit!))
+    Futurist::ForkingResolutionStrategy.new(
+      forking_method: forking_method,
+      promise: stub_promise,
+      process_monitor_constructor: -> (_) {},
+      process_exit: process_exit,
+      channel: pipe
+    )
+
+    expect(process_exit).to have_received(:call).
+      with(0)
+  end
+
   it "reraises errors which occur in the forked process" do
     error = StandardError.new("expected")
     callable = Proc.new { fail error }
