@@ -3,11 +3,13 @@ module Futurist
     def initialize(forking_method: Process.method(:fork),
                    process_monitor_constructor: Process.method(:detach),
                    channel: Futurist::Pipe.new,
+                   process_exit: Process.method(:exit!),
                    promise:)
       @promise = promise
       @channel = channel
       @forking_method = forking_method
       @value = :not_retrieved
+      @process_exit = process_exit
       @promise_process_id = start_promise_evaluation
       @promise_monitor = process_monitor_constructor.call(@promise_process_id)
     end
@@ -28,14 +30,16 @@ module Futurist
     attr_reader :promise,
                 :channel,
                 :forking_method,
-                :promise_monitor
+                :promise_monitor,
+                :process_exit
 
     def start_promise_evaluation
       forking_method.call do
+        channel.close_reader
         safe_promise = SafePromise.new(promise)
         channel.write(safe_promise.value)
         channel.close_writer
-        exit!(0)
+        process_exit.call(0)
       end
     end
 
