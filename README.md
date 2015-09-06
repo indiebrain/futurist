@@ -4,7 +4,7 @@
 [![Code Climate](https://codeclimate.com/github/indiebrain/futurist/badges/gpa.svg)](https://codeclimate.com/github/indiebrain/futurist)
 [![Test Coverage](https://codeclimate.com/github/indiebrain/futurist/badges/coverage.svg)](https://codeclimate.com/github/indiebrain/futurist/coverage)
 
-An implementation of the [future](https://en.wikipedia.org/wiki/Futures_and_promises) construct which eagerly evaluates its promise and uses blocking value resolution semantics.
+An implementation of the [future](https://en.wikipedia.org/wiki/Futures_and_promises) construct which eagerly evaluates its promise and uses blocking value resolution.
 
 **Note**
 This implementation will only work on OSes which support process forking.
