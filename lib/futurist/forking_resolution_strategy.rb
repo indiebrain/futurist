@@ -1,5 +1,6 @@
 module Futurist
   class ForkingResolutionStrategy
+    attr_reader :promise_process_id
     def initialize(forking_method: Process.method(:fork),
                    process_monitor_constructor: Process.method(:detach),
                    channel: Futurist::Pipe.new,
