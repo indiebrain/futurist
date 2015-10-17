@@ -11,10 +11,20 @@ This implementation will only work on OSes which support process forking.
 
 ## Installation
 
+
+### Directly via RubyGems
+
     $ gem install futurist
 
+then
 
-or add this line to your application's Gemfile:
+```ruby
+require 'futurist'
+```
+
+### or with Bundler
+
+add this line to your application's Gemfile:
 
 ```ruby
 gem 'futurist'
