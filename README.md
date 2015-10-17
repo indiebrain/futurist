@@ -11,10 +11,13 @@ This implementation will only work on OSes which support process forking.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+    $ gem install futurist
+
+
+or add this line to your application's Gemfile:
 
 ```ruby
-gem 'futurist', github: 'indiebrain/futurist'
+gem 'futurist'
 ```
 
 And then execute:
