@@ -1,67 +1,42 @@
 require "spec_helper"
 
 describe Futurist::Future do
-  it "receives the value of its promise at some future point in time" do
-    value = "value"
-    future = Futurist::Future.new { value }
-
-    expect(future.value).
-      to eq(value)
-  end
-
-  it "reraises exceptions which occur in its promise's execution" do
-    class FakeError < StandardError; end
-    future = Futurist::Future.new { fail(FakeError, "fail") }
-
-    expect { future.value }.
-      to raise_error(FakeError, "fail")
-  end
 
   it "is ready after the promise's value has finished calculating" do
-    class ResolvedResolutionStrategy < FakeResolutionStrategy
-      def resolved?
-        true
-      end
-    end
+    resolution_strategy = double("ResolutionStrategy",
+                                 resolved?: true)
+    resolution_strategy_constructor = ->(_) { resolution_strategy }
 
-    value = "value"
     future = Futurist::Future.new(
-      resolution_strategy: ResolvedResolutionStrategy
-    ) { value }
+      resolution_strategy_constructor: resolution_strategy_constructor
+    ) { "value" }
 
-    future.value
-
-    expect(future).
-      to be_ready
+    expect(future)
+      .to be_ready
   end
 
   it "is not ready before the promise's value has finished calculating" do
-    class NotResolvedResolutionStrategy < FakeResolutionStrategy
-      def resolved?
-        false
-      end
-    end
-
-    value = "value"
+    resolution_strategy = double("ResolutionStrategy",
+                                 resolved?: false)
     future = Futurist::Future.new(
-      resolution_strategy: NotResolvedResolutionStrategy
+      resolution_strategy_constructor: ->(_) { resolution_strategy }
     ) { value }
-    allow(future).
-      to receive(:start_promise_evaluation)
+    allow(future)
+      .to receive(:start_promise_evaluation)
 
-    future.value
-
-    expect(future).
-      to_not be_ready
+    expect(future)
+      .to_not be_ready
   end
 
-  class FakeResolutionStrategy
-    def initialize(promise:)
-      @promise = promise
-    end
+  it "is valued by the resolution of its promise" do
+    resolution_strategy = double("ResolutionStrategy",
+                                 resolve: "value")
 
-    def resolve
-      @promise.value
-    end
+    future = Futurist::Future.new(
+      resolution_strategy_constructor: ->(_) { resolution_strategy }
+    )
+
+    expect(future.value)
+      .to eq("value")
   end
 end
