@@ -1,9 +1,12 @@
 module Futurist
   class Future
-    def initialize(resolution_strategy_constructor: ForkingResolutionStrategy.public_method(:new),
+    def initialize(resolution_strategy_constructor: ForkingResolutionStrategy.
+                    public_method(:new),
                    &block)
+
       promise = Futurist::Promise.new(callable: block)
-      @resolution_strategy = resolution_strategy_constructor.call(promise: promise)
+      @resolution_strategy = resolution_strategy_constructor.
+                               call(promise: promise)
     end
 
     def value
