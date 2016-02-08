@@ -1,3 +1,7 @@
+addons:
+  apt:
+    packages:
+    - libgmp-dev
 language: ruby
 rvm:
   - 2.3.0
@@ -5,4 +9,4 @@ rvm:
   - 2.2.3
   - 2.2.2
   - 2.1.8
-before_install: gem install bundler -v 1.10.4
+before_install: gem install bundler
