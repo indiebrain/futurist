@@ -3,7 +3,7 @@ require "spec_helper"
 describe Futurist::SafePromise do
   it "returns the value of the promise" do
     value = double(:value)
-    callable = Proc.new { value }
+    callable = -> () { value }
     promise = Futurist::Promise.new(callable: callable)
     safe_promise = Futurist::SafePromise.new(promise)
 
@@ -12,7 +12,7 @@ describe Futurist::SafePromise do
   end
 
   it "returns the exception as its value when the promise raises an error" do
-    callable = Proc.new { fail StandardError, "expected" }
+    callable = ->() { fail StandardError, "expected" }
     promise = Futurist::Promise.new(callable: callable)
     safe_promise = Futurist::SafePromise.new(promise)
 

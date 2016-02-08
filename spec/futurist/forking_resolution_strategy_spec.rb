@@ -82,7 +82,7 @@ describe Futurist::ForkingResolutionStrategy do
 
   it "reraises errors which occur in the forked process" do
     error = StandardError.new("expected")
-    callable = Proc.new { fail error }
+    callable = ->() { fail error }
     promise = Futurist::Promise.new(callable: callable)
     strategy = Futurist::ForkingResolutionStrategy.new(promise: promise)
 
@@ -102,14 +102,10 @@ describe Futurist::ForkingResolutionStrategy do
   end
 
   it "is ready after the process has exited" do
-    def ready_monitor_initializer(_process_id)
-      stub_monitor(ready: true)
-    end
-    ready_monitor_constructor = method(:ready_monitor_initializer)
     allow_any_instance_of(Futurist::ForkingResolutionStrategy).
       to receive(:start_promise_evaluation)
     strategy = Futurist::ForkingResolutionStrategy.new(
-      process_monitor_constructor: ready_monitor_constructor,
+      process_monitor_constructor: ->(_) { stub_monitor(ready: true) },
       promise: stub_promise
     )
     allow(strategy).
@@ -122,14 +118,10 @@ describe Futurist::ForkingResolutionStrategy do
   end
 
   it "is not ready when the process has not yet exited" do
-    def not_ready_monitor_initializer(_process_id)
-      stub_monitor(ready: false)
-    end
-    not_ready_monitor_constructor = method(:not_ready_monitor_initializer)
     allow_any_instance_of(Futurist::ForkingResolutionStrategy).
       to receive(:start_promise_evaluation)
     strategy = Futurist::ForkingResolutionStrategy.new(
-      process_monitor_constructor: not_ready_monitor_constructor,
+      process_monitor_constructor: ->(_) { stub_monitor(ready: false) },
       promise: stub_promise
     )
     allow(strategy).
