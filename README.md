@@ -4,17 +4,69 @@
 [![Code Climate](https://codeclimate.com/github/indiebrain/futurist/badges/gpa.svg)](https://codeclimate.com/github/indiebrain/futurist)
 [![Test Coverage](https://codeclimate.com/github/indiebrain/futurist/badges/coverage.svg)](https://codeclimate.com/github/indiebrain/futurist/coverage)
 
-An implementation of the [future](https://en.wikipedia.org/wiki/Futures_and_promises) construct which uses Process forking to resolve its Promise. Promise evaluation is eager, and value resolution blocks until the Promise is resolved.
+### Goals of Futurist
 
-**Note**
-This implementation will only work on OSes which support process forking.
+Provide a mechanism to transparently execute code in parallel.
+
+### On Futures, Promises, and Resolution
+
+A future is a proxy for a result that is initially unknown, usually
+because the computation of its value is not yet complete.
+
+The terms Future and Promise are colloquially used as interchangably,
+however their formal definitions describe important, distinct
+concepts. Formally, a Future is something which holds a value whereas
+a Promise is the funciton, or means by which the future's value is
+set; note that a promise may be, and is often, executed
+asyncrhonously.
+
+"A future is a read-only placeholder view of a
+variable. A promise is a writable, single assignment container which
+sets the value of the future."
+[<sup>1</sup>](https://en.wikipedia.org/wiki/Futures_and_promises)
+
+When a promise computes and sets the value of its future, it is said
+to resolve the value of the future.
+
+### Features of Futurist
+
+* Eager promise resolution. Promise resolution begins during Future
+  initialization. Futurist resolves its promises in a forked
+  process. This allows promises to be resolved in parallel.
+* Blocking synchronization semantics. If the value of a future is
+  requested before its promise is resolved, the call to value blocks
+  until the promise is resolved. This removes the need for
+  special-case error handling and allows the client code to be
+  ignorant of synchronization code and interact with the future in an
+  imperative manner.
+
+### When to use Futurist
+
+* A set of tasks has inherent latency for each task. For example,
+  making a set of HTTP requests.
+* Task execution benefits from memory isolation provided by process
+  forking.
+
+### When NOT to use Futurist
+
+* If the runtime operating system does not support process
+  forking. Specifically, "...fork(2) is not available on some
+  platforms like Windows and NetBSD
+  4." [<sup>2</sup>](http://ruby-doc.org/core-2.3.0/Process.html#method-c-fork)
+* The set of active futures at any given time is greater than the
+  maximum number of file descriptors a user is allowed to open on the
+  file system. This can be mitigated by processing the set of tasks
+  in batches.
+* The overhead of process forking outweighs the cost of the latency
+  for the set of tasks to be performed.
 
 ## Installation
 
-
 ### Directly via RubyGems
 
-    $ gem install futurist
+```shell
+$ gem install futurist
+```
 
 then
 
@@ -32,16 +84,18 @@ gem 'futurist'
 
 And then execute:
 
-    $ bundle
-
+```shell
+$ bundle
+```
 
 ## Usage
 
-Futures also allow you to background the computation of any block.
-
 ### Create a future
 
-The call to `Futurist::Future#value` will block until the result of executing the block is available. If an exception occurs during the block's execution, the call to future.value will reraise the same exception.
+The call to `Futurist::Future#value` will block until the result of
+executing the block is available. If an exception occurs during the
+block's execution, the call to future.value will reraise the
+exception.
 
 ```ruby
 future = Futurist::Future.new { 3 + 2 }
@@ -51,10 +105,23 @@ future.value # blocks until value is available
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install
+dependencies. Then, run `rake rspec` to run the tests. You can also
+run `bin/console` for an interactive prompt that will allow you to
+experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake
+install`. To release a new version, update the version number in
+`version.rb`, and then run `bundle exec rake release`, which will
+create a git tag for the version, push git commits and tags, and push
+the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/indiebrain/futurist.
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/indiebrain/futurist.
+
+## References
+
+* <sup>1</sup> [https://en.wikipedia.org/wiki/Futures_and_promises](https://en.wikipedia.org/wiki/Futures_and_promises)
+* <sup>2</sup> [http://ruby-doc.org/core-2.3.0/Process.html#method-c-fork](http://ruby-doc.org/core-2.3.0/Process.html#method-c-fork)
