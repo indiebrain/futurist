@@ -53,6 +53,11 @@ to resolve the value of the future.
   forking. Specifically, "...fork(2) is not available on some
   platforms like Windows and NetBSD
   4." [<sup>2</sup>](http://ruby-doc.org/core-2.3.0/Process.html#method-c-fork)
+* If the promise needs to manipulate the process hierarchy. For
+  example, if the promise makes use of `Kernel#exec`; `Kernel#exec`
+  forks a child process and replaces the current process with the
+  newly forked process. This is problematic in the promise as it
+  replaces the value resolving process.
 * The set of active futures at any given time is greater than the
   maximum number of file descriptors a user is allowed to open on the
   file system. This can be mitigated by processing the set of tasks
