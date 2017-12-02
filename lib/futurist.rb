@@ -1,3 +1,4 @@
+require "futurist/bounder"
 require "futurist/forking_resolution_strategy"
 require "futurist/future"
 require "futurist/pipe"
