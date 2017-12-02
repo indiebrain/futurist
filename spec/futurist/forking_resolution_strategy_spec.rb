@@ -25,7 +25,7 @@ describe Futurist::ForkingResolutionStrategy do
       promise: stub_promise,
       process_monitor_constructor: -> (_) {},
       process_exit: -> (_) {},
-      channel: pipe
+      channel_constructor: ->() { pipe }
     )
 
     expect(pipe).to have_received(:close_reader)
@@ -39,7 +39,7 @@ describe Futurist::ForkingResolutionStrategy do
       promise: stub_promise,
       process_monitor_constructor: -> (_) {},
       process_exit: -> (_) {},
-      channel: pipe
+      channel_constructor: ->() { pipe }
     )
 
     expect(pipe).to have_received(:write)
@@ -53,7 +53,7 @@ describe Futurist::ForkingResolutionStrategy do
       promise: stub_promise,
       process_monitor_constructor: -> (_) {},
       process_exit: -> (_) {},
-      channel: pipe
+      channel_constructor: ->(){ pipe }
     )
 
     expect(pipe).to have_received(:close_writer)
@@ -73,7 +73,7 @@ describe Futurist::ForkingResolutionStrategy do
       promise: stub_promise,
       process_monitor_constructor: -> (_) {},
       process_exit: process_exit,
-      channel: pipe
+      channel_constructor: ->() { pipe }
     )
 
     expect(process_exit).to have_received(:call).
