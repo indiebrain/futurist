@@ -1,8 +1,8 @@
 # Futurist
 
-[![Build Status](https://travis-ci.org/indiebrain/futurist.svg?branch=master)](https://travis-ci.org/indiebrain/futurist)
 [![Code Climate](https://codeclimate.com/github/indiebrain/futurist/badges/gpa.svg)](https://codeclimate.com/github/indiebrain/futurist)
 [![Test Coverage](https://codeclimate.com/github/indiebrain/futurist/badges/coverage.svg)](https://codeclimate.com/github/indiebrain/futurist/coverage)
+## Background
 
 ### Goals of Futurist
 
